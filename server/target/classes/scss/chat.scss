@@ -1,0 +1,86 @@
+@use "light-theme" as lt;
+
+.chat {
+  -fx-background-color: lt.$background;
+  -fx-text-fill: lt.$text;
+  -fx-font-family: "Segoe UI", sans-serif;
+
+  &__theme {
+    -fx-background-radius: 50;
+    -fx-background-color: lt.$secondary;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, lt.$overlay, 4, 0.4, 0.9, 0.0);
+
+    &:pressed {
+      -fx-background-color: lt.$overlay;
+    }
+  }
+
+  &__bubble {
+
+    -fx-min-width: 72;
+    -fx-padding: 16;
+    -fx-background-radius: 32;
+    -fx-border-radius: 32;
+    -fx-text-fill: lt.$text;
+    -fx-wrap-text: true;
+    -fx-font-size: 14;
+
+    &__in {
+      -fx-border-color: lt.$overlay;
+      -fx-background-color: lt.$secondary;
+      -fx-text-alignment: left;
+    }
+
+    &__out {
+      -fx-border-color: lt.$accent;
+      -fx-background-color: lt.$primary;
+      -fx-text-alignment: right;
+
+    }
+  }
+
+  &__scroll {
+    -fx-border-radius: 16;
+    -fx-background-radius: 16;
+    -fx-background-color: lt.$background;
+    -fx-border-color: lt.$overlay;
+
+    .viewport {
+      -fx-background-color: transparent;
+      -fx-border-color: transparent;
+      -fx-border-radius: 16;
+      -fx-background-radius: 16;
+    }
+  }
+
+  &__title {
+    -fx-font-size: 24;
+    -fx-font-weight: bold;
+  }
+
+  &__bottom {
+    &__textbox {
+      -fx-background-radius: 32;
+      -fx-border-radius: 32;
+      -fx-padding: 16;
+      -fx-font-size: 14px;
+      -fx-highlight-fill: lt.$accent;
+      -fx-highlight-text-fill: lt.$background;
+      -fx-font-weight: 600;
+      -fx-background-color: lt.$secondary;
+      -fx-border-color: lt.$overlay;
+    }
+
+    &__send {
+      -fx-background-radius: 50;
+      -fx-background-color: lt.$accent;
+      -fx-cursor: hand;
+
+
+      &:pressed {
+        -fx-background-color: lt.$primary;
+      }
+    }
+  }
+}

@@ -1,0 +1,29 @@
+@use "dark-theme" as dt;
+
+.chat {
+  -fx-background-color: dt.$background;
+  -fx-text-fill: dt.$text;
+
+  &__theme {
+    -fx-background-radius: 50;
+  }
+
+  &__scroll {
+
+  }
+
+  &__title {
+
+  }
+
+  &__bottom {
+    &__textbox {
+
+    }
+
+    &__send {
+      -fx-background-radius: 50;
+      -fx-background-color: dt.$accent;
+    }
+  }
+}
