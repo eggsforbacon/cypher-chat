@@ -18,13 +18,13 @@
          <bottom>
             <HBox alignment="CENTER_LEFT" minHeight="-Infinity" minWidth="-Infinity" spacing="8.0" BorderPane.alignment="CENTER">
                <children>
-                  <TextField fx:id="messageTF" onAction="#sendMessage" prefHeight="42.0" promptText="Type a message..." styleClass="chat__bottom__textbox" HBox.hgrow="ALWAYS">
+                  <TextField fx:id="messageTF" onAction="#sendFromTextField" prefHeight="42.0" promptText="Type a message..." styleClass="chat__bottom__textbox" HBox.hgrow="ALWAYS">
                      <font>
                         <Font name="Lucida Sans Demibold Italic" size="12.0" />
                      </font></TextField>
-                  <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="52.0" prefWidth="52.0" styleClass="chat__bottom__send" HBox.hgrow="ALWAYS">
+                  <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#sendFromButton" prefHeight="52.0" prefWidth="52.0" styleClass="chat__bottom__send" HBox.hgrow="ALWAYS">
                      <center>
-                        <ImageView fitHeight="36.0" fitWidth="36.0" onMouseClicked="#sendMessage" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fitHeight="36.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../icons/send.png" />
                            </image></ImageView>
@@ -34,7 +34,7 @@
             </HBox>
          </bottom>
          <top>
-            <Label styleClass="chat__title" text="Chatroom" BorderPane.alignment="CENTER" />
+            <Label styleClass="chat__title" text="Chatroom (Client)" BorderPane.alignment="CENTER" />
          </top>
          <padding>
             <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />

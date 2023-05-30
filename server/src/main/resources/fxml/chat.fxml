@@ -34,7 +34,7 @@
             </HBox>
          </bottom>
          <top>
-            <Label styleClass="chat__title" text="Chatroom (Client)" BorderPane.alignment="CENTER" />
+            <Label styleClass="chat__title" text="Chatroom (Server)" BorderPane.alignment="CENTER" />
          </top>
          <padding>
             <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />

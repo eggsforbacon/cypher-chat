@@ -10,10 +10,10 @@ import java.net.URL;
 
 public class Main extends Application {
 
-    ClientController gui;
+    ServerController gui;
 
     public Main() {
-        gui = new ClientController();
+        gui = new ServerController();
     }
 
     public static void main(String[] args) {

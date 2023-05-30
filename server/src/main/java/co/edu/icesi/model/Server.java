@@ -1,32 +1,36 @@
 package co.edu.icesi.model;
 
-import co.edu.icesi.ui.ClientController;
+import co.edu.icesi.ui.ServerController;
 import javafx.scene.layout.VBox;
 
 import java.io.*;
+import java.net.ServerSocket;
 import java.net.Socket;
 
-public class Client {
+public class Server {
+
+    private final ServerSocket serverSocket;
     private final Socket socket;
     private BufferedReader bufferedReader;
     private BufferedWriter bufferedWriter;
 
-    public Client(Socket socket) throws IOException {
-        this.socket = socket;
+    public Server(ServerSocket serverSocket) throws IOException {
+        this.serverSocket = serverSocket;
+        this.socket = serverSocket.accept();
         this.bufferedReader = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
         this.bufferedWriter = new BufferedWriter(new OutputStreamWriter(this.socket.getOutputStream()));
-        System.out.println("Connected to server at " + socket.getInetAddress().getHostAddress() + ":" + socket.getLocalPort());
+        System.out.println("Server is up and running at " + serverSocket.getInetAddress().getHostAddress() + ":" + serverSocket.getLocalPort());
     }
 
-    public void receiveMessageFromServer(VBox messagesVB) {
-        System.out.println("Listening for server incoming messages...");
+    public void receiveMessageFromClient(VBox messagesVB) {
         new Thread(() -> {
+            System.out.println("Listening for client incoming messages...");
             while (socket.isConnected()) {
                 try {
-                    String messageFromServer = bufferedReader.readLine();
-                    ClientController.addBubble(messageFromServer, messagesVB);
+                    String messageFromClient = bufferedReader.readLine();
+                    ServerController.addBubble(messageFromClient, messagesVB);
                 } catch (IOException ioe) {
-                    System.out.println("Error receiving message from server.");
+                    System.out.println("Error receiving message from client.");
                     ioe.printStackTrace();
                     break;
                 }
@@ -34,17 +38,17 @@ public class Client {
         }).start();
     }
 
-    public void sendMessageToServer(String messageToSend) {
+    public void sendMessageToClient(String messageToSend) {
         try {
             bufferedWriter.write(messageToSend);
             bufferedWriter.newLine();
             bufferedWriter.flush();
         } catch (IOException ioe) {
-            System.out.println("Error sending message to the server.");
+            System.out.println("Error sending message to the client.");
             ioe.printStackTrace();
             closeEverything(socket, bufferedReader, bufferedWriter);
         }
-        System.out.println("Message sent to server");
+        System.out.println("Message sent to client");
     }
 
     public void closeEverything (Socket socket, BufferedReader bufferedReader, BufferedWriter bufferedWriter) {

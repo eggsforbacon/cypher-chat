@@ -1,6 +1,6 @@
 package co.edu.icesi.ui;
 
-import co.edu.icesi.model.Client;
+import co.edu.icesi.model.Server;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -16,14 +16,13 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
 import java.io.IOException;
-import java.net.Socket;
+import java.net.ServerSocket;
 import java.net.URL;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
-public class ClientController implements Initializable {
-
-    private Client client;
+public class ServerController implements Initializable {
+    private Server server;
 
     private boolean lightsAreOut;
 
@@ -44,7 +43,7 @@ public class ClientController implements Initializable {
         lightsAreOut = false;
 
         try {
-            client = new Client(new Socket("localhost", 1234));
+            server = new Server(new ServerSocket(1234));
         } catch (IOException e) {
             System.out.println("Error creating the client.");
             e.printStackTrace();
@@ -55,7 +54,7 @@ public class ClientController implements Initializable {
 
         });
 
-        client.receiveMessageFromServer(messagesVB);
+        server.receiveMessageFromClient(messagesVB);
     }
 
     @FXML
@@ -76,12 +75,13 @@ public class ClientController implements Initializable {
 
             Text text = new Text(messageToSend);
             TextFlow textFlow = new TextFlow(text);
-            textFlow.getStyleClass().add(0, "chat__bubble__out");
+            textFlow.getStyleClass().add(0, "chat__bubble");
+            textFlow.getStyleClass().add(1, "chat__bubble__out");
 
             messageHB.getChildren().add(textFlow);
             messagesVB.getChildren().add(messageHB);
 
-            client.sendMessageToServer(messageToSend);
+            server.sendMessageToClient(messageToSend);
             messageTF.clear();
         }
     }
@@ -101,7 +101,8 @@ public class ClientController implements Initializable {
 
         Text text = new Text(messageFromServer);
         TextFlow textFlow = new TextFlow(text);
-        textFlow.getStyleClass().add(0, "chat__bubble__in");
+        textFlow.getStyleClass().add(0, "chat__bubble");
+        textFlow.getStyleClass().add(1, "chat__bubble__in");
 
         messageHB.getChildren().add(textFlow);
 

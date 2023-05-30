@@ -1,0 +1,13 @@
+.chat {
+  -fx-background-color: #171717;
+  -fx-text-fill: #f5f5f5;
+}
+.chat__theme {
+  -fx-background-radius: 50;
+}
+.chat__bottom__send {
+  -fx-background-radius: 50;
+  -fx-background-color: #781c62;
+}
+
+/*# sourceMappingURL=chat-dark.css.map */
