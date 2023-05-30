@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane stylesheets="@../css/chat.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <BorderPane fx:id="chatBorderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="960.0" prefWidth="540.0" styleClass="chat" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <bottom>
+            <HBox alignment="CENTER_LEFT" minHeight="-Infinity" minWidth="-Infinity" spacing="8.0" BorderPane.alignment="CENTER">
+               <children>
+                  <TextField onAction="#sendMessage" prefHeight="42.0" promptText="Type a message..." styleClass="chat__bottom__textbox" HBox.hgrow="ALWAYS">
+                     <font>
+                        <Font name="Lucida Sans Demibold Italic" size="12.0" />
+                     </font></TextField>
+                  <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="52.0" prefWidth="52.0" styleClass="chat__bottom__send" HBox.hgrow="ALWAYS">
+                     <center>
+                        <ImageView fitHeight="36.0" fitWidth="36.0" onMouseClicked="#sendMessage" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../../../../../resources/icons/send.png" />
+                           </image></ImageView>
+                     </center>
+                  </BorderPane>
+               </children>
+            </HBox>
+         </bottom>
+         <top>
+            <Label styleClass="chat__title" text="Chatroom" BorderPane.alignment="CENTER" />
+         </top>
+         <padding>
+            <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
+         </padding>
+         <center>
+            <ScrollPane hbarPolicy="NEVER" pannable="true" prefHeight="815.0" prefWidth="512.0" styleClass="chat__scroll" BorderPane.alignment="BOTTOM_RIGHT">
+               <BorderPane.margin>
+                  <Insets bottom="16.0" top="16.0" />
+               </BorderPane.margin>
+               <content>
+                  <VBox fx:id="messagesVB" prefWidth="512.0" />
+               </content>
+            </ScrollPane>
+         </center>
+      </BorderPane>
+      <BorderPane layoutX="10.0" layoutY="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#switchTheme" prefHeight="52.0" prefWidth="52.0" styleClass="chat__theme" AnchorPane.rightAnchor="16.0" AnchorPane.topAnchor="16.0">
+         <center>
+            <ImageView fitHeight="36.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../../../../../../resources/icons/moon.png" />
+               </image>
+            </ImageView>
+         </center>
+      </BorderPane>
+   </children>
+</AnchorPane>

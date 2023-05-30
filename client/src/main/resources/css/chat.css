@@ -1,0 +1,70 @@
+.chat {
+  -fx-background-color: #f8fbf9;
+  -fx-text-fill: #020302;
+  -fx-font-family: "Segoe UI", sans-serif;
+}
+.chat__theme {
+  -fx-background-radius: 50;
+  -fx-background-color: #ffffff;
+  -fx-cursor: hand;
+  -fx-effect: dropshadow(gaussian, #ebeeec, 4, 0.4, 0.9, 0);
+}
+.chat__theme:pressed {
+  -fx-background-color: #ebeeec;
+}
+.chat__bubble {
+  -fx-min-width: 72;
+  -fx-padding: 16;
+  -fx-background-radius: 32;
+  -fx-border-radius: 32;
+  -fx-text-fill: #020302;
+  -fx-wrap-text: true;
+  -fx-font-size: 14;
+}
+.chat__bubble__out {
+  -fx-border-color: #ebeeec;
+  -fx-background-color: #ffffff;
+  -fx-text-alignment: left;
+}
+.chat__bubble__in {
+  -fx-border-color: #783f6b;
+  -fx-background-color: #e2a2d3;
+  -fx-text-alignment: right;
+}
+.chat__scroll {
+  -fx-border-radius: 16;
+  -fx-background-radius: 16;
+  -fx-background-color: #f8fbf9;
+  -fx-border-color: #ebeeec;
+}
+.chat__scroll .viewport {
+  -fx-background-color: transparent;
+  -fx-border-color: transparent;
+  -fx-border-radius: 16;
+  -fx-background-radius: 16;
+}
+.chat__title {
+  -fx-font-size: 24;
+  -fx-font-weight: bold;
+}
+.chat__bottom__textbox {
+  -fx-background-radius: 32;
+  -fx-border-radius: 32;
+  -fx-padding: 16;
+  -fx-font-size: 14px;
+  -fx-highlight-fill: #783f6b;
+  -fx-highlight-text-fill: #f8fbf9;
+  -fx-font-weight: 600;
+  -fx-background-color: #ffffff;
+  -fx-border-color: #ebeeec;
+}
+.chat__bottom__send {
+  -fx-background-radius: 50;
+  -fx-background-color: #783f6b;
+  -fx-cursor: hand;
+}
+.chat__bottom__send:pressed {
+  -fx-background-color: #e2a2d3;
+}
+
+/*# sourceMappingURL=chat.css.map */
