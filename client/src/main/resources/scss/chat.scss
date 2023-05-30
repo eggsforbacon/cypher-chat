@@ -26,16 +26,17 @@
     -fx-wrap-text: true;
     -fx-font-size: 14;
 
-    &__out {
+    &__in {
       -fx-border-color: lt.$overlay;
       -fx-background-color: lt.$secondary;
       -fx-text-alignment: left;
     }
 
-    &__in {
+    &__out {
       -fx-border-color: lt.$accent;
       -fx-background-color: lt.$primary;
       -fx-text-alignment: right;
+
     }
   }
 
