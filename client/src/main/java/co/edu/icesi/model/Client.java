@@ -4,12 +4,14 @@ import co.edu.icesi.ui.ClientController;
 import javafx.scene.layout.VBox;
 
 import java.io.*;
+import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Client {
-    private final Socket socket;
+    private Socket socket;
     private BufferedReader bufferedReader;
     private BufferedWriter bufferedWriter;
+    private Thread listenerThread;
 
     public Client(Socket socket) throws IOException {
         this.socket = socket;
@@ -20,7 +22,7 @@ public class Client {
 
     public void receiveMessageFromServer(VBox messagesVB) {
         System.out.println("Listening for server incoming messages...");
-        new Thread(() -> {
+        listenerThread = new Thread(() -> {
             while (socket.isConnected()) {
                 try {
                     String messageFromServer = bufferedReader.readLine();
@@ -31,7 +33,9 @@ public class Client {
                     break;
                 }
             }
-        }).start();
+        });
+
+        listenerThread.start();
     }
 
     public void sendMessageToServer(String messageToSend) {
@@ -55,5 +59,21 @@ public class Client {
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
+    }
+
+    public Thread getListenerThread() {
+        return listenerThread;
+    }
+
+    public Socket getSocket() {
+        return socket;
+    }
+
+    public BufferedReader getBufferedReader() {
+        return bufferedReader;
+    }
+
+    public BufferedWriter getBufferedWriter() {
+        return bufferedWriter;
     }
 }

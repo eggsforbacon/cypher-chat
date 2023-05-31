@@ -52,7 +52,7 @@
       </BorderPane>
       <BorderPane layoutX="10.0" layoutY="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#switchTheme" prefHeight="52.0" prefWidth="52.0" styleClass="chat__theme" AnchorPane.rightAnchor="16.0" AnchorPane.topAnchor="16.0">
          <center>
-            <ImageView fitHeight="36.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="themeIconIMV" fitHeight="36.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../icons/moon.png" />
                </image>

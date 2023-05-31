@@ -8,6 +8,8 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -38,14 +40,17 @@ public class ServerController implements Initializable {
     @FXML
     private TextField messageTF = new TextField();
 
+    @FXML
+    private ImageView themeIconIMV = new ImageView();
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         lightsAreOut = false;
 
         try {
-            server = new Server(new ServerSocket(1234));
+            server = new Server(new ServerSocket(55130));
         } catch (IOException e) {
-            System.out.println("Error creating the client.");
+            System.out.println("Error creating the server.");
             e.printStackTrace();
         }
 
@@ -91,7 +96,8 @@ public class ServerController implements Initializable {
         String lightThemeURL = Objects.requireNonNull(getClass().getResource("/css/chat.css")).toExternalForm();
         String darkThemeURL = Objects.requireNonNull(getClass().getResource("/css/chat-dark.css")).toExternalForm();
         chatBorderPane.getStylesheets().clear();
-        chatBorderPane.getStylesheets().add(0, lightsAreOut ? lightThemeURL : darkThemeURL);
+        chatBorderPane.getStylesheets().add( lightsAreOut ? lightThemeURL : darkThemeURL);
+        themeIconIMV.setImage(new Image(String.valueOf(getClass().getResource(lightsAreOut ? "/icons/moon.png" : "/icons/sun.png"))));
         lightsAreOut = !lightsAreOut;
     }
 
@@ -107,5 +113,13 @@ public class ServerController implements Initializable {
         messageHB.getChildren().add(textFlow);
 
         Platform.runLater(() -> vbox.getChildren().add(messageHB));
+    }
+
+    public Thread getListenerThread() {
+        return server.getListenerThread();
+    }
+
+    public void closeEverything() {
+        server.closeEverything( server.getServerSocket(), server.getSocket(), server.getBufferedReader(), server.getBufferedWriter());
     }
 }

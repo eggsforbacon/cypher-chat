@@ -1,6 +1,7 @@
 package co.edu.icesi.ui;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -29,5 +30,20 @@ public class Main extends Application {
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
+    }
+
+    @Override
+    public void stop() throws Exception {
+        super.stop();
+        if (gui.getListenerThread() != null) {
+            gui.getListenerThread().interrupt();
+            try {
+                gui.getListenerThread().join();
+            } catch (InterruptedException ie) {
+                ie.printStackTrace();
+            }
+        }
+        gui.closeEverything();
+        Platform.exit();
     }
 }

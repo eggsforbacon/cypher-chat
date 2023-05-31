@@ -21,12 +21,12 @@
   -fx-wrap-text: true;
   -fx-font-size: 14;
 }
-.chat__bubble__out {
+.chat__bubble__in {
   -fx-border-color: #ebeeec;
   -fx-background-color: #ffffff;
   -fx-text-alignment: left;
 }
-.chat__bubble__in {
+.chat__bubble__out {
   -fx-border-color: #783f6b;
   -fx-background-color: #e2a2d3;
   -fx-text-alignment: right;

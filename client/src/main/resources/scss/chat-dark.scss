@@ -3,27 +3,83 @@
 .chat {
   -fx-background-color: dt.$background;
   -fx-text-fill: dt.$text;
+  //-fx-font-family: "Segoe UI", sans-serif;
 
   &__theme {
     -fx-background-radius: 50;
+    -fx-background-color: dt.$secondary;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, dt.$overlay, 4, 0.4, 0.9, 0.0);
+
+    &:pressed {
+      -fx-background-color: dt.$overlay;
+    }
+  }
+
+  &__bubble {
+
+    -fx-min-width: 72;
+    -fx-padding: 16;
+    -fx-background-radius: 32;
+    -fx-border-radius: 32;
+    -fx-text-fill: dt.$text;
+    -fx-wrap-text: true;
+    -fx-font-size: 14;
+
+    &__in {
+      -fx-border-color: dt.$overlay;
+      -fx-background-color: dt.$secondary;
+      -fx-text-alignment: left;
+    }
+
+    &__out {
+      -fx-border-color: dt.$accent;
+      -fx-background-color: dt.$primary;
+      -fx-text-alignment: right;
+
+    }
   }
 
   &__scroll {
+    -fx-border-radius: 16;
+    -fx-background-radius: 16;
+    -fx-background-color: dt.$background;
+    -fx-border-color: dt.$overlay;
 
+    .viewport {
+      -fx-background-color: transparent;
+      -fx-border-color: transparent;
+      -fx-border-radius: 16;
+      -fx-background-radius: 16;
+    }
   }
 
   &__title {
-
+    -fx-font-size: 24;
+    -fx-font-weight: bold;
   }
 
   &__bottom {
     &__textbox {
-
+      -fx-background-radius: 32;
+      -fx-border-radius: 32;
+      -fx-padding: 16;
+      -fx-font-size: 14px;
+      -fx-highlight-fill: dt.$accent;
+      -fx-highlight-text-fill: dt.$background;
+      -fx-font-weight: 600;
+      -fx-background-color: dt.$secondary;
+      -fx-border-color: dt.$overlay;
     }
 
     &__send {
       -fx-background-radius: 50;
       -fx-background-color: dt.$accent;
+      -fx-cursor: hand;
+
+      &:pressed {
+        -fx-background-color: dt.$primary;
+      }
     }
   }
 }

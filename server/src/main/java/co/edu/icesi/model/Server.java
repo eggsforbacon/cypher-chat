@@ -9,10 +9,11 @@ import java.net.Socket;
 
 public class Server {
 
-    private final ServerSocket serverSocket;
-    private final Socket socket;
+    private ServerSocket serverSocket;
+    private Socket socket;
     private BufferedReader bufferedReader;
     private BufferedWriter bufferedWriter;
+    private Thread listenerThread;
 
     public Server(ServerSocket serverSocket) throws IOException {
         this.serverSocket = serverSocket;
@@ -23,7 +24,7 @@ public class Server {
     }
 
     public void receiveMessageFromClient(VBox messagesVB) {
-        new Thread(() -> {
+        listenerThread = new Thread(() -> {
             System.out.println("Listening for client incoming messages...");
             while (socket.isConnected()) {
                 try {
@@ -35,7 +36,9 @@ public class Server {
                     break;
                 }
             }
-        }).start();
+        });
+
+        listenerThread.start();
     }
 
     public void sendMessageToClient(String messageToSend) {
@@ -46,18 +49,39 @@ public class Server {
         } catch (IOException ioe) {
             System.out.println("Error sending message to the client.");
             ioe.printStackTrace();
-            closeEverything(socket, bufferedReader, bufferedWriter);
+            closeEverything(serverSocket, socket, bufferedReader, bufferedWriter);
         }
         System.out.println("Message sent to client");
     }
 
-    public void closeEverything (Socket socket, BufferedReader bufferedReader, BufferedWriter bufferedWriter) {
+    public void closeEverything (ServerSocket serverSocket, Socket socket, BufferedReader bufferedReader, BufferedWriter bufferedWriter) {
         try {
             if (bufferedReader != null) bufferedReader.close();
             if (bufferedWriter != null) bufferedWriter.close();
             if (socket != null) socket.close();
+            if (serverSocket != null) serverSocket.close();
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
+    }
+
+    public Thread getListenerThread() {
+        return listenerThread;
+    }
+
+    public ServerSocket getServerSocket() {
+        return serverSocket;
+    }
+
+    public Socket getSocket() {
+        return socket;
+    }
+
+    public BufferedReader getBufferedReader() {
+        return bufferedReader;
+    }
+
+    public BufferedWriter getBufferedWriter() {
+        return bufferedWriter;
     }
 }

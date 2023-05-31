@@ -8,6 +8,8 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -39,12 +41,15 @@ public class ClientController implements Initializable {
     @FXML
     private TextField messageTF = new TextField();
 
+    @FXML
+    private ImageView themeIconIMV = new ImageView();
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         lightsAreOut = false;
 
         try {
-            client = new Client(new Socket("localhost", 1234));
+            client = new Client(new Socket("localhost", 55130));
         } catch (IOException e) {
             System.out.println("Error creating the client.");
             e.printStackTrace();
@@ -76,7 +81,8 @@ public class ClientController implements Initializable {
 
             Text text = new Text(messageToSend);
             TextFlow textFlow = new TextFlow(text);
-            textFlow.getStyleClass().add(0, "chat__bubble__out");
+            textFlow.getStyleClass().add(0, "chat__bubble");
+            textFlow.getStyleClass().add(1, "chat__bubble__out");
 
             messageHB.getChildren().add(textFlow);
             messagesVB.getChildren().add(messageHB);
@@ -91,7 +97,8 @@ public class ClientController implements Initializable {
         String lightThemeURL = Objects.requireNonNull(getClass().getResource("/css/chat.css")).toExternalForm();
         String darkThemeURL = Objects.requireNonNull(getClass().getResource("/css/chat-dark.css")).toExternalForm();
         chatBorderPane.getStylesheets().clear();
-        chatBorderPane.getStylesheets().add(0, lightsAreOut ? lightThemeURL : darkThemeURL);
+        chatBorderPane.getStylesheets().add(lightsAreOut ? lightThemeURL : darkThemeURL);
+        themeIconIMV.setImage(new Image(String.valueOf(getClass().getResource(lightsAreOut ? "/icons/moon.png" : "/icons/sun.png"))));
         lightsAreOut = !lightsAreOut;
     }
 
@@ -101,10 +108,19 @@ public class ClientController implements Initializable {
 
         Text text = new Text(messageFromServer);
         TextFlow textFlow = new TextFlow(text);
-        textFlow.getStyleClass().add(0, "chat__bubble__in");
+        textFlow.getStyleClass().add(0, "chat__bubble");
+        textFlow.getStyleClass().add(1, "chat__bubble__in");
 
         messageHB.getChildren().add(textFlow);
 
         Platform.runLater(() -> vbox.getChildren().add(messageHB));
+    }
+
+    public Thread getListenerThread() {
+        return client.getListenerThread();
+    }
+
+    public void closeEverything() {
+        client.closeEverything( client.getSocket(), client.getBufferedReader(), client.getBufferedWriter());
     }
 }
