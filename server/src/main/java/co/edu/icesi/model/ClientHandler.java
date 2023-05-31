@@ -7,6 +7,7 @@ import java.util.ArrayList;
 public class ClientHandler implements Runnable{
 
     public static ArrayList<ClientHandler> clientHandlers = new ArrayList<>();
+    private static int connectedClients = 0;
     private Socket socket;
     private BufferedReader bufferedReader;
     private BufferedWriter bufferedWriter;
@@ -19,8 +20,15 @@ public class ClientHandler implements Runnable{
             this.bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
             this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             this.username = bufferedReader.readLine();
-            clientHandlers.add(this);
-            sendClientMessage("Server: " + username + " has entered the chat");
+            if(connectedClients >= 2){
+                sendClientMessage("Max number of clients has been reach");
+                System.exit(0);
+            } else {
+                clientHandlers.add(this);
+                sendClientMessage("Server: " + username + " has entered the chat");
+                connectedClients++;
+            }
+
         } catch (IOException error) {
             closeEverything(socket, bufferedReader, bufferedWriter);
         }
@@ -70,6 +78,4 @@ public class ClientHandler implements Runnable{
             error.printStackTrace();
         }
     }
-
-
 }
