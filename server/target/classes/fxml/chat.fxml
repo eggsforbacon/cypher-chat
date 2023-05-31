@@ -14,7 +14,7 @@
 
 <AnchorPane stylesheets="@../css/chat.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <BorderPane fx:id="chatBorderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="960.0" prefWidth="540.0" styleClass="chat" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <BorderPane fx:id="chatBorderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="460.0" prefWidth="540.0" styleClass="chat" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <bottom>
             <HBox alignment="CENTER_LEFT" minHeight="-Infinity" minWidth="-Infinity" spacing="8.0" BorderPane.alignment="CENTER">
                <children>
@@ -40,12 +40,12 @@
             <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
          </padding>
          <center>
-            <ScrollPane fx:id="mainSP" hbarPolicy="NEVER" pannable="true" prefHeight="815.0" prefWidth="512.0" styleClass="chat__scroll" BorderPane.alignment="BOTTOM_RIGHT">
+            <ScrollPane fx:id="mainSP" hbarPolicy="NEVER" pannable="true" prefHeight="415.0" prefWidth="512.0" styleClass="chat__scroll" BorderPane.alignment="BOTTOM_RIGHT">
                <BorderPane.margin>
                   <Insets bottom="16.0" top="16.0" />
                </BorderPane.margin>
                <content>
-                  <VBox fx:id="messagesVB" prefWidth="512.0" />
+                  <VBox fx:id="messagesVB" prefWidth="412.0" />
                </content>
             </ScrollPane>
          </center>
