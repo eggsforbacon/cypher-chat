@@ -1,3 +1,4 @@
 co\edu\icesi\model\Client.class
 co\edu\icesi\ui\ClientController.class
 co\edu\icesi\ui\Main.class
+co\edu\icesi\model\DiffieHellman.class

@@ -1,6 +1,6 @@
 package co.edu.icesi.model;
 
-//import co.edu.icesi.ui.ClientController;
+import co.edu.icesi.ui.ClientController;
 import javafx.scene.layout.VBox;
 
 import java.io.*;
@@ -9,8 +9,12 @@ import java.net.ServerSocket;
 import javax.crypto.Cipher;
 import javax.crypto.KeyAgreement;
 import javax.crypto.spec.*;
+import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.net.Socket;
+import java.sql.SQLOutput;
+import java.util.Arrays;
+import java.util.Base64;
 import java.util.Scanner;
 
 public class Client {
@@ -24,36 +28,55 @@ public class Client {
     private PublicKey  receivedPublicKey;
     private byte[] secretKey;
     private String secretMessage;
+    private Thread listenerThread;
+    private DiffieHellman diffieHellman;
+    public Client(Socket socket) throws IOException {
+        this.socket = socket;
+        this.bufferedReader = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
+        this.bufferedWriter = new BufferedWriter(new OutputStreamWriter(this.socket.getOutputStream()));
+        this.diffieHellman = new DiffieHellman();
 
+        diffieHellman.generateKeys();
 
-    public Client(Socket socket, String username) throws IOException {
-        try {
-            this.socket = socket;
-            this.bufferedReader = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
-            this.bufferedWriter = new BufferedWriter(new OutputStreamWriter(this.socket.getOutputStream()));
-            this.username = username;
-            System.out.println("Connected to server at " + socket.getInetAddress().getHostAddress() + ":" + socket.getLocalPort());
-        } catch (IOException e){
-            closeEverything(socket, bufferedReader, bufferedWriter);
-        }
+        System.out.println("Connected to server at " + socket.getInetAddress().getHostAddress() + ":" + socket.getLocalPort());
     }
 
-    public void sendMessage() {
+    public void receiveMessageFromServer(VBox messagesVB) {
+        System.out.println("Listening for server incoming messages...");
+        listenerThread = new Thread(() -> {
+            while (socket.isConnected()) {
+                try {
+                    String messageFromServer = bufferedReader.readLine();
+                    if(messageFromServer.contains("SYN/ACK ")){
+                        diffieHellman.receivePublicKeyFrom(messageFromServer.replaceAll("SYN/ACK ", ""));
+                        sendMessageToServer("ACK ");
+                    }
+                    ClientController.addBubble(messageFromServer, messagesVB);
+                } catch (IOException ioe) {
+                    System.out.println("Error receiving message from server.");
+                    ioe.printStackTrace();
+                    break;
+                }
+            }
+        });
+
+        listenerThread.start();
+    }
+
+    public String getPublicKey(){
+        return Base64.getEncoder().encodeToString(diffieHellman.getPublicKey().getEncoded());
+    }
+
+    public void sendMessageToServer(String messageToSend) {
         try {
-            bufferedWriter.write(username);
+            String encryptedMsg = messageToSend;
+            if(!messageToSend.contains("SYN ") & !messageToSend.contains("ACK ")){
+                encryptedMsg = new String(diffieHellman.encryptMessage(messageToSend));
+            }
+            System.out.println(encryptedMsg);
+            bufferedWriter.write(encryptedMsg);
             bufferedWriter.newLine();
             bufferedWriter.flush();
-
-            Scanner scanner = new Scanner(System.in);
-
-            while (socket.isConnected()){
-                String messageToSend = scanner.nextLine();
-                encryptAndSendMessage(messageToSend, this);
-//                bufferedWriter.write(username + ": " + messageToSend);
-                bufferedWriter.newLine();
-                bufferedWriter.flush();
-            }
-
         } catch (IOException ioe) {
             System.out.println("Error sending message to the server.");
             ioe.printStackTrace();
@@ -62,214 +85,29 @@ public class Client {
         System.out.println("Message sent to server");
     }
 
-    public void readMessage(){
-        new Thread(() -> {
-            String msg;
-                while (socket.isConnected()){
-                    try {
-                        msg = bufferedReader.readLine();
-                        receiveAndDecryptMessage(msg.getBytes());
-//                        System.out.println(msg);
-                    } catch (IOException e) {
-                        closeEverything(socket, bufferedReader, bufferedWriter);
-                    }
-                }
-        }).start();
-    }
-
-    public void closeEverything(Socket socket, BufferedReader bufferedReader, BufferedWriter bufferedWriter){
-        try{
-            if (bufferedReader != null){
-                bufferedReader.close();
-            }
-            if (bufferedWriter != null){
-                bufferedWriter.close();
-            }
-            if (socket != null){
-                socket.close();
-            }
-        }catch (IOException error){
-            error.printStackTrace();
-        }
-    }
-
-    /*Diffie Hellman Implementation*/
-
-    public void encryptAndSendMessage(String message, Client client) {
+    public void closeEverything (Socket socket, BufferedReader bufferedReader, BufferedWriter bufferedWriter) {
         try {
-            SecretKeySpec keySpec = new SecretKeySpec(secretKey, "AES");
-            Cipher cipher  = Cipher.getInstance("AES_256/ECB/NoPadding");
-            cipher.init(Cipher.ENCRYPT_MODE, keySpec);
-            byte[] encryptedMessage = cipher.doFinal(message.getBytes());
-
-            client.receiveAndDecryptMessage(encryptedMessage);
-        } catch (Exception e) {
-            e.printStackTrace();
+            if (bufferedReader != null) bufferedReader.close();
+            if (bufferedWriter != null) bufferedWriter.close();
+            if (socket != null) socket.close();
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
         }
     }
 
-    public void generateCommonSecretKey() {
-        try {
-            KeyAgreement keyAgreement = KeyAgreement.getInstance("DH");
-            keyAgreement.init(privateKey);
-            keyAgreement.doPhase(receivedPublicKey, true);
-            secretKey = keyAgreement.generateSecret();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public Thread getListenerThread() {
+        return listenerThread;
     }
 
-    public void generateKeys() {
-        try {
-            final KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("DH");
-            keyPairGenerator.initialize(1024);
-
-            final KeyPair keyPair = keyPairGenerator.generateKeyPair();
-
-            privateKey = keyPair.getPrivate();
-            publicKey  = keyPair.getPublic();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public Socket getSocket() {
+        return socket;
     }
 
-    public PublicKey getPublicKey() {
-        return publicKey;
+    public BufferedReader getBufferedReader() {
+        return bufferedReader;
     }
 
-    public void receiveAndDecryptMessage(byte[] message) {
-        try {
-            SecretKeySpec keySpec = new SecretKeySpec(secretKey, "AES");
-            Cipher cipher = Cipher.getInstance("AES_256/ECB/NoPadding");
-
-            cipher.init(Cipher.DECRYPT_MODE, keySpec);
-
-            secretMessage = new String(cipher.doFinal(message));
-            showSecretMessage();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public BufferedWriter getBufferedWriter() {
+        return bufferedWriter;
     }
-
-    public void receivePublicKeyFrom(Client client) {
-        receivedPublicKey = client.getPublicKey();
-    }
-
-    public void showSecretMessage() {
-        System.out.println(secretMessage);
-    }
-
-
-    public static void main(String[] args) throws IOException{
-        Socket socket = new Socket("localhost", 1234);
-        Client a = new Client(socket,"a");
-        Client b = new Client(socket,"b");
-
-        a.generateKeys();
-        b.generateKeys();
-
-        a.receivePublicKeyFrom(b);
-        b.receivePublicKeyFrom(a);
-
-        a.generateCommonSecretKey();
-        b.generateCommonSecretKey();
-
-        a.encryptAndSendMessage("Hello", b);
-        b.showSecretMessage();
-
-
-//       Scanner scanner = new Scanner(System.in);
-//       System.out.println("Enter your username");
-//       String username = scanner.nextLine();
-//       Socket socket = new Socket("localhost", 1234);
-//       Client client = new Client(socket,username);
-//       client.generateKeys();
-//
-//        ServerSocket serverSocket = new ServerSocket(1234);
-//        Socket otherClientSocket = serverSocket.accept();
-//        Client otherClient = new Client(otherClientSocket, username);
-//        otherClient.generateKeys();
-//
-//        // Exchange public keys
-//        client.receivePublicKeyFrom(otherClient);
-//        otherClient.receivePublicKeyFrom(client);
-//
-//        // Generate common secret keys
-//        client.generateCommonSecretKey();
-//        otherClient.generateCommonSecretKey();
-//
-//        System.out.println("Both clients connected and keys exchanged.");
-//
-//        client.readMessage();
-//        client.sendMessage();
-    }
-
-
-
-//    private Thread listenerThread;
-//
-//    public Client(Socket socket) throws IOException {
-//        this.socket = socket;
-//        this.bufferedReader = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
-//        this.bufferedWriter = new BufferedWriter(new OutputStreamWriter(this.socket.getOutputStream()));
-//        System.out.println("Connected to server at " + socket.getInetAddress().getHostAddress() + ":" + socket.getLocalPort());
-//    }
-//
-//    public void receiveMessageFromServer(VBox messagesVB) {
-//        System.out.println("Listening for server incoming messages...");
-//        listenerThread = new Thread(() -> {
-//            while (socket.isConnected()) {
-//                try {
-//                    String messageFromServer = bufferedReader.readLine();
-//                    ClientController.addBubble(messageFromServer, messagesVB);
-//                } catch (IOException ioe) {
-//                    System.out.println("Error receiving message from server.");
-//                    ioe.printStackTrace();
-//                    break;
-//                }
-//            }
-//        });
-//
-//        listenerThread.start();
-//    }
-//
-//    public void sendMessageToServer(String messageToSend) {
-//        try {
-//            bufferedWriter.write(messageToSend);
-//            bufferedWriter.newLine();
-//            bufferedWriter.flush();
-//        } catch (IOException ioe) {
-//            System.out.println("Error sending message to the server.");
-//            ioe.printStackTrace();
-//            closeEverything(socket, bufferedReader, bufferedWriter);
-//        }
-//        System.out.println("Message sent to server");
-//    }
-//
-//    public void closeEverything (Socket socket, BufferedReader bufferedReader, BufferedWriter bufferedWriter) {
-//        try {
-//            if (bufferedReader != null) bufferedReader.close();
-//            if (bufferedWriter != null) bufferedWriter.close();
-//            if (socket != null) socket.close();
-//        } catch (IOException ioe) {
-//            ioe.printStackTrace();
-//        }
-//    }
-//
-//    public Thread getListenerThread() {
-//        return listenerThread;
-//    }
-//
-//    public Socket getSocket() {
-//        return socket;
-//    }
-//
-//    public BufferedReader getBufferedReader() {
-//        return bufferedReader;
-//    }
-//
-//    public BufferedWriter getBufferedWriter() {
-//        return bufferedWriter;
-//    }
 }
