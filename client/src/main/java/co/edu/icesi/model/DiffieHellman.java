@@ -89,10 +89,11 @@ public class DiffieHellman {
         return publicKey;
     }
 
-    public void receiveAndDecryptMessage(byte[] message) {
+    public String decryptMessage(String message) {
         try {
-            byte[] iv = Arrays.copyOfRange(message, 0, 16);
-            byte[] encryptedMessage = Arrays.copyOfRange(message, 16, message.length);
+            byte[] messageArray = message.getBytes();
+            byte[] iv = Arrays.copyOfRange(messageArray, 0, 16);
+            byte[] encryptedMessage = Arrays.copyOfRange(messageArray, 16, messageArray.length);
 
 
             SecretKeySpec keySpec = new SecretKeySpec(secretKey, "AES");
@@ -101,10 +102,11 @@ public class DiffieHellman {
             cipher.init(Cipher.DECRYPT_MODE, keySpec, new IvParameterSpec(iv));
 
             secretMessage = new String(cipher.doFinal(encryptedMessage));
-//            showSecretMessage();
+            return secretMessage;
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return null;
     }
 
     private PublicKey parsePublicKey(String publicKey){
@@ -122,9 +124,6 @@ public class DiffieHellman {
 
     public void receivePublicKeyFrom(String publicKey) throws IOException {
         receivedPublicKey = parsePublicKey(publicKey);
-    }
-
-    public void showSecretMessage() {
-        System.out.println(secretMessage);
+        generateCommonSecretKey();
     }
 }

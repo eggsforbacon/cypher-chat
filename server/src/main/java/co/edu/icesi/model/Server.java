@@ -38,8 +38,10 @@ public class Server {
                     if(messageFromClient.contains("SYN ")){
                         diffieHellman.receivePublicKeyFrom(messageFromClient.replaceAll("SYN ", ""));
                         establishConnection();
+                    } else {
+                        String decryptedMessage = diffieHellman.decryptMessage(messageFromClient);
+                        ServerController.addBubble(decryptedMessage, messagesVB);
                     }
-                    ServerController.addBubble(messageFromClient, messagesVB);
                 } catch (IOException ioe) {
                     System.out.println("Error receiving message from client.");
                     closeEverything(serverSocket, socket, bufferedReader, bufferedWriter);

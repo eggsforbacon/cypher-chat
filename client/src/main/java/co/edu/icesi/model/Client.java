@@ -50,8 +50,10 @@ public class Client {
                     if(messageFromServer.contains("SYN/ACK ")){
                         diffieHellman.receivePublicKeyFrom(messageFromServer.replaceAll("SYN/ACK ", ""));
                         sendMessageToServer("ACK ");
+                    } else {
+                        String decryptedMessage = diffieHellman.decryptMessage(messageFromServer);
+                        ClientController.addBubble(decryptedMessage, messagesVB);
                     }
-                    ClientController.addBubble(messageFromServer, messagesVB);
                 } catch (IOException ioe) {
                     System.out.println("Error receiving message from server.");
                     ioe.printStackTrace();
