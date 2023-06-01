@@ -29,6 +29,13 @@ public class Server {
         System.out.println("Server is up and running at " + serverSocket.getInetAddress().getHostAddress() + ":" + serverSocket.getLocalPort());
     }
 
+    /**
+     * Listens for incoming messages from a client, decrypts them using Diffie-Hellman
+     * key exchange, and displays them in a message bubble.
+     * 
+     * @param messagesVB It is a VBox object that represents a container in JavaFX, used to display
+     * messages received from the client in the user interface.
+     */
     public void receiveMessageFromClient(VBox messagesVB) {
         listenerThread = new Thread(() -> {
             System.out.println("Listening for client incoming messages...");
@@ -54,9 +61,20 @@ public class Server {
         listenerThread.start();
     }
 
+    /**
+     * Establishes a connection by sending a message to the client containing a
+     * Diffie-Hellman public key encoded in Base64.
+     */
     private void establishConnection(){
         sendMessageToClient("SYN/ACK " + Base64.getEncoder().encodeToString(diffieHellman.getPublicKey().getEncoded()));
     }
+    
+    /**
+     * Sends an encrypted message to a client using a Diffie-Hellman key exchange
+     * protocol.
+     * 
+     * @param messageToSend A string message that is to be sent to the client.
+     */
     public void sendMessageToClient(String messageToSend) {
         try {
             String encryptedMsg = messageToSend;

@@ -21,7 +21,6 @@ public class Client {
     private Socket socket;
     private BufferedReader bufferedReader;
     private BufferedWriter bufferedWriter;
-    private String username;
 
     private PrivateKey privateKey;
     private PublicKey publicKey;
@@ -41,6 +40,12 @@ public class Client {
         System.out.println("Connected to server at " + socket.getInetAddress().getHostAddress() + ":" + socket.getLocalPort());
     }
 
+    /**
+     * Listens for incoming messages from a server, decrypts them if necessary
+     * 
+     * @param messagesVB A VBox object that represents the container for displaying messages in the
+     * user interface.
+     */
     public void receiveMessageFromServer(VBox messagesVB) {
         System.out.println("Listening for server incoming messages...");
         listenerThread = new Thread(() -> {
@@ -65,10 +70,21 @@ public class Client {
         listenerThread.start();
     }
 
+    /**
+     * Returns the Diffie-Hellman public key encoded in Base64 format as a string.
+     * 
+     * @return A string representation of the Diffie-Hellman public key encoded in Base64 format.
+     */
     public String getPublicKey(){
         return Base64.getEncoder().encodeToString(diffieHellman.getPublicKey().getEncoded());
     }
 
+    /**
+     * Sends an encrypted message to the server using a Diffie-Hellman key exchange
+     * algorithm.
+     * 
+     * @param messageToSend A string containing the message to be sent to the server.
+     */
     public void sendMessageToServer(String messageToSend) {
         try {
             String encryptedMsg = messageToSend;
