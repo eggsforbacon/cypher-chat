@@ -14,6 +14,12 @@ Ahora, dentro del **model** del **client** se encuentra la clase principal Clien
 Asimismo, la carpeta **model** del **server** contiene la clase Server y la implementación del DiffieHellman. Y dentro de la **ui**, está la clase ServerController y el Main.
 
 El segundo paso consistió en establecer la conexión entre cliente y servidor a través de Sockets. En el Servidor se específica el puerto y en el Cliente se indica la dirección del host y el puerto proporcionado por el Servidor. 
+Después, para la implementación del Diffie-Hellman se realizó lo siguiente:
+- Se generan las claves públicas y privadas tanto del Cliente como del Servidor
+- Intercambian las llaves
+- Se genera la llave secreta común a partir de las llaves generadas previamente
+- Los mensajes enviados se encriptan
+- Una vez se recibe el mensaje, este se desencripta y se presenta en texto plano.
 
 ## Dificultades
 Por la añadidura de una interfaz gráfica, hubo algunas complicaciones en la implmentación a cabalidad de la visión gráfica pensada para el programa, principalmente por la falta de práctica con JavaFX y CSSFX. En cuanto a la arquitecura del código, definir la estructura del proyecto fue un desafío en sí mismo, y hubo al menos 2 implementaciones anteriores a la actual.
